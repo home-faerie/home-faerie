@@ -6,6 +6,7 @@ pub mod zigbee2mqtt;
 
 #[tokio::main]
 async fn main() -> Result<(), MainError> {
+    let pgsql_url = std::env::var("POSTGRESQL_URL")?;
     let mqtt_url = std::env::var("MQTT_URL")?;
     let mqtt_port: u16 = std::env::var("MQTT_PORT")?.parse().unwrap_or(1883);
     let mut mqttoptions = MqttOptions::new("rumqtt-async", mqtt_url, mqtt_port);
@@ -13,7 +14,7 @@ async fn main() -> Result<(), MainError> {
 
     let (client, mut eventloop) = AsyncClient::new(mqttoptions, 10);
 
-    let pool = PgPool::connect("postgresql:/meters").await?;
+    let pool = PgPool::connect(&pgsql_url).await?;
 
     loop {
         match eventloop.poll().await {
