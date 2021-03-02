@@ -458,8 +458,10 @@ dependencies = [
 name = "house-daemon"
 version = "0.1.0"
 dependencies = [
+ "bytes",
  "main_error",
  "rumqttc",
+ "serde_json",
  "sqlx",
  "tokio",
 ]

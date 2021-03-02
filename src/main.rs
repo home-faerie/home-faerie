@@ -1,5 +1,8 @@
 use main_error::MainError;
 use rumqttc::{AsyncClient, Event, MqttOptions, Packet, QoS};
+use sqlx::postgres::PgPool;
+
+pub mod zigbee2mqtt;
 
 #[tokio::main]
 async fn main() -> Result<(), MainError> {
@@ -10,19 +13,22 @@ async fn main() -> Result<(), MainError> {
 
     let (client, mut eventloop) = AsyncClient::new(mqttoptions, 10);
 
+    let pool = PgPool::connect("postgresql:/meters").await?;
+
     loop {
         match eventloop.poll().await {
             Ok(Event::Incoming(Packet::Publish(p))) => {
                 // TODO: Set up handlers dynamically...
-                match p.topic.as_str().split('/').take(1).next() {
-                    Some("zigbee2mqtt") => {
-                        println!("TODO: {:?}:{:?}", p.topic, p.payload);
+                let topic = p.topic.as_str().split('/').collect::<Vec<&str>>();
+                if topic.len() == 0 {
+                    continue;
+                }
+                match topic[0] {
+                    "zigbee2mqtt" => {
+                        zigbee2mqtt::handle_packet(&pool, &topic[1..], p.payload).await;
                     },
-                    Some(_) => {
-                        println!("Some(_): {:?}:{:?}", p.topic, p.payload);
-                    },
-                    None => {
-                        println!("None: {:?}:{:?}", p.topic, p.payload);
+                    _ => {
+                        //println!("Some(_): {:?}:{:?}", p.topic, p.payload);
                     }
                 }
             },
