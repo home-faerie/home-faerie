@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [ main ]
   push:
-    branches: [ main ]
+    branches: [ main, actions ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -23,7 +23,7 @@ jobs:
         build:
         - stable-amd64
         - nightly-amd64
-          # - stable-arm
+        - stable-arm
         include:
         - build: stable-amd64
           os: ubuntu-20.04
@@ -31,10 +31,10 @@ jobs:
         - build: nightly-amd64
           os: ubuntu-20.04
           rust: nightly
-          # - build: stable-arm
-          #   os: ubuntu-20.04
-          #   rust: stable
-          #   target: arm-unknown-linux-gnueabihf
+        - build: stable-arm
+          os: ubuntu-20.04
+          rust: stable
+          target: arm-unknown-linux-gnueabihf
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
