@@ -34,8 +34,8 @@ jobs:
           os: ubuntu-20.04
           rust: stable
           target: arm-unknown-linux-gnueabihf
-          artifact_name: home_fairie
-          asset_name: home_fairie_arm
+          artifact_name: home_faerie
+          asset_name: home_faerie_arm
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
