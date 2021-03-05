@@ -25,6 +25,10 @@ Create database schema:
         value_meta json
     );
 
+    CREATE INDEX ON device_meters (name, timestamp);
+    CREATE INDEX ON device_meters USING GIN (dimensions);
+
+
 And run the application:
 
 .. code-block:: text
