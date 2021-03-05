@@ -1,11 +1,12 @@
-Home Daemon
+Home Fairie
 ===========
 
-Home Daemon is a set of lightweight utilities for logging
-data from various sensors and meters.
+Home Fairie is a set of lightweight utilities (fairies)
+for various home environment monitoring, data logging
+and automation tasks.
 
-Features
---------
+Features (so far..)
+-------------------
 
 * Zigbee2MQTT sensor data logging to PostgreSQL database
 
