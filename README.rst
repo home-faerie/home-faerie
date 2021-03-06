@@ -1,9 +1,22 @@
-Home Fairie
+Home Faerie
 ===========
 
-Home Fairie is a set of lightweight utilities (fairies)
-for various home environment monitoring, data logging
-and automation tasks.
+Home Faerie is a set of lightweight utilities ([auto]magical faeries)
+for various home monitoring, data logging and automation tasks.
+
+Why?
+----
+
+Because I wanted something simple and lightweight :)
+
+It started with a set of Python scripts running on a Olimex Lime 2:
+
+* zigbee2mqtt data logger to PostgreSQL
+* simple utility script to for a zigbee button which then toggles multiple
+  tasmota-controlled lights.
+
+And now Rust - I can just drop a single binary to filesystem and restart
+the systemd service.
 
 Features (so far..)
 -------------------
