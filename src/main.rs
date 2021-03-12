@@ -1,4 +1,5 @@
 use main_error::MainError;
+use rand::{distributions::Alphanumeric, Rng};
 use rumqttc::{AsyncClient, Event, MqttOptions, Packet, QoS};
 use sqlx::postgres::PgPool;
 
@@ -9,7 +10,13 @@ async fn main() -> Result<(), MainError> {
     let pgsql_url = std::env::var("POSTGRESQL_URL")?;
     let mqtt_url = std::env::var("MQTT_URL")?;
     let mqtt_port: u16 = std::env::var("MQTT_PORT")?.parse().unwrap_or(1883);
-    let mut mqttoptions = MqttOptions::new("rumqtt-async", mqtt_url, mqtt_port);
+    let s: String = rand::thread_rng()
+                .sample_iter(&Alphanumeric)
+                .take(7)
+                .map(char::from)
+                .collect();
+
+    let mut mqttoptions = MqttOptions::new(["home", "faerie", &s].join("-"), mqtt_url, mqtt_port);
     mqttoptions.set_keep_alive(5);
 
     let (client, mut eventloop) = AsyncClient::new(mqttoptions, 10);
