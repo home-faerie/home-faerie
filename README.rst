@@ -47,3 +47,21 @@ And run the application:
 .. code-block:: text
 
     $ POSTGRESQL_URL=postgresql:/meters MQTT_URL=zigbee2mqtt-gateway.local MQTT_PORT=1883 cargo run
+
+Visualizations
+--------------
+
+Panels in Grafana:
+
+.. code-block:: sql
+
+    SELECT
+      timestamp as time,
+      dimensions->>'id' AS device,
+      value
+    FROM
+      device_meters
+    WHERE
+      $__timeFilter("timestamp")
+      AND name = 'temperature'
+    ORDER BY 1,2
