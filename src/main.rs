@@ -7,9 +7,31 @@ pub mod zigbee2mqtt;
 
 #[tokio::main]
 async fn main() -> Result<(), MainError> {
-    let pgsql_url = std::env::var("POSTGRESQL_URL")?;
-    let mqtt_url = std::env::var("MQTT_URL")?;
-    let mqtt_port: u16 = std::env::var("MQTT_PORT")?.parse().unwrap_or(1883);
+    let mqtt_url = match std::env::var("MQTT_URL") {
+        Ok(val) => val,
+        Err(_e) => {
+            let v = "localhost";
+            println!("MQTT_URL not defined, using default: '{}'", v);
+            v.to_string()
+        },
+    };
+    let mqtt_port: u16 = match std::env::var("MQTT_PORT") {
+        // XXX
+        Ok(val) => val.parse().unwrap_or(1883),
+        Err(_e) => {
+            let v = 1883;
+            println!("MQTT_PORT not defined, using default: '{}'", v);
+            v
+        }
+    };
+    let pgsql_url = match std::env::var("POSTGRESQL_URL") {
+        Ok(val) => val,
+        Err(_e) => {
+            let v= "postgresql:/meters";
+            println!("POSTGRESQL_URL not defined, using default: '{}", v);
+            v.to_string()
+        },
+    };
     let s: String = rand::thread_rng()
                 .sample_iter(&Alphanumeric)
                 .take(7)
