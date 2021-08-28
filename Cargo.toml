@@ -10,7 +10,7 @@ edition = "2018"
 bytes = "1"
 main_error = "0.1.1"
 rand = "0.8.3"
-rumqttc = "0.5.0"
+rumqttc = "0.8.0"
 serde_json = { version = "1.0" }
 sqlx = { version = "0.5", features = [ "json", "postgres", "runtime-tokio-rustls" ] }
 tokio = { version = "1", features = ["full"] }
