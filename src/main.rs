@@ -1,7 +1,8 @@
 use main_error::MainError;
 use rand::{distributions::Alphanumeric, Rng};
-use rumqttc::{AsyncClient, Event, MqttOptions, Packet, QoS};
+use rumqttc::{AsyncClient, ConnectionError, Event, MqttOptions, Packet, QoS};
 use sqlx::postgres::PgPool;
+use std::io::ErrorKind;
 
 pub mod zigbee2mqtt;
 
@@ -72,9 +73,27 @@ async fn main() -> Result<(), MainError> {
             Ok(Event::Outgoing(_p)) => {
                 // println!("Out: {:?}", _p);
             },
+            Err(ConnectionError::Io(io)) => {
+                match io.kind() {
+                    ErrorKind::ConnectionRefused => {
+                        println!("Unable to connect to MQTT (connection refused)");
+                        break
+                    },
+                    ErrorKind::Other => {
+                        // DNS resolution failure
+                        println!("Unable to connect to MQTT ({})", io.to_string());
+                        break
+                    },
+                    _ => {
+                        println!("Error = {:?}", io);
+                    },
+                }
+            },
             Err(e) => {
                 println!("Error = {:?}", e);
             }
         }
     }
+
+    Ok(())
 }
