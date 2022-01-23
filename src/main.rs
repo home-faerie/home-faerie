@@ -40,7 +40,7 @@ async fn main() -> Result<(), MainError> {
                 .collect();
 
     let mut mqttoptions = MqttOptions::new(["home", "faerie", &s].join("-"), mqtt_url, mqtt_port);
-    mqttoptions.set_keep_alive(5);
+    mqttoptions.set_keep_alive(std::time::Duration::from_secs(5));
     mqttoptions.set_max_packet_size(512 * 1024, 512 * 1024);
 
     let (client, mut eventloop) = AsyncClient::new(mqttoptions, 10);
