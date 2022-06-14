@@ -46,7 +46,7 @@ And run the application:
 
 .. code-block:: text
 
-    $ POSTGRESQL_URL=postgresql:/meters MQTT_URL=zigbee2mqtt-gateway.local MQTT_PORT=1883 cargo run
+    $ POSTGRESQL_URL=postgresql:/meters MQTT_URI=mqtt://zigbee2mqtt-gateway.locaal?client_id=home-faerie-123 cargo run
 
 Visualizations
 --------------

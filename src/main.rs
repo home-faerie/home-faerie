@@ -8,38 +8,34 @@ pub mod zigbee2mqtt;
 
 #[tokio::main]
 async fn main() -> Result<(), MainError> {
-    let mqtt_url = match std::env::var("MQTT_URL") {
-        Ok(val) => val,
-        Err(_e) => {
-            let v = "localhost";
-            println!("MQTT_URL not defined, using default: '{}'", v);
-            v.to_string()
-        },
-    };
-    let mqtt_port: u16 = match std::env::var("MQTT_PORT") {
-        // XXX
-        Ok(val) => val.parse().unwrap_or(1883),
-        Err(_e) => {
-            let v = 1883;
-            println!("MQTT_PORT not defined, using default: '{}'", v);
-            v
-        }
-    };
     let pgsql_url = match std::env::var("POSTGRESQL_URL") {
         Ok(val) => val,
         Err(_e) => {
-            let v= "postgresql:/meters";
+            let v = "postgresql:/meters";
             println!("POSTGRESQL_URL not defined, using default: '{}", v);
             v.to_string()
-        },
+        }
     };
-    let s: String = rand::thread_rng()
+
+    let mqtt_url = match std::env::var("MQTT_URI") {
+        Ok(val) => val,
+        Err(_e) => {
+            let s: String = rand::thread_rng()
                 .sample_iter(&Alphanumeric)
-                .take(7)
+                .take(6)
                 .map(char::from)
                 .collect();
 
-    let mut mqttoptions = MqttOptions::new(["home", "faerie", &s].join("-"), mqtt_url, mqtt_port);
+            let v = format!(
+                "mqtt://localhost:1883?client_id={}",
+                ["home", "faerie", &s].join("-")
+            );
+            println!("MQTT_URI not defined, using default: '{}'", v);
+            v.to_string()
+        }
+    };
+
+    let mut mqttoptions = MqttOptions::parse_url(mqtt_url)?;
     mqttoptions.set_keep_alive(std::time::Duration::from_secs(5));
     mqttoptions.set_max_packet_size(512 * 1024, 512 * 1024);
 
